@@ -1,9 +1,6 @@
 package hotel_management.room;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -14,13 +11,16 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String number;
+    @Column(nullable = false)
+    private Long number;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoomSize size;
 
     private Room() {}
 
-    public Room(String number, RoomSize size) {
+    public Room(Long number, RoomSize size) {
         this.number = number;
         this.size = size;
     }
@@ -29,7 +29,7 @@ public class Room {
         return id;
     }
 
-    public String getNumber() {
+    public Long getNumber() {
         return number;
     }
 
