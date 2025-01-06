@@ -3,9 +3,11 @@ package hotel_management.reservation;
 import hotel_management.room.Room;
 import hotel_management.room.RoomRepository;
 import hotel_management.room.RoomSize;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public class ReservationService {
         Optional<Room> room = roomRepository.findById(roomId);
         if (room.isEmpty()) {
             // TODO Throw error that room doesn't exist
+            return new Reservation();
         }
 
         boolean roomIsBooked = reservationRepository.roomIsBooked(roomId, start, end);
@@ -40,10 +43,14 @@ public class ReservationService {
     }
 
     public Reservation bookRoomOfSize(RoomSize roomSize, LocalDate start, LocalDate end) {
-        /*
-            Check if a room of given size is available
-            Create reservation
-         */
-        return new Reservation();
+        List<Room> availableRooms = reservationRepository.availableRoomsOfSize(roomSize, start, end, PageRequest.ofSize(1));
+        if (availableRooms.isEmpty()) {
+            // TODO Throw error that no rooms of given size is available
+            return new Reservation();
+        }
+
+        Room room = availableRooms.getFirst();
+        Reservation reservation = new Reservation(start, end, room);
+        return reservationRepository.save(reservation);
     }
 }
