@@ -162,7 +162,6 @@ const BookingView: React.FC = () => {
             >
                 {errorMessage}
             </Alert>
-
             <Alert
                 variant="success"
                 show={successMessage !== undefined}
