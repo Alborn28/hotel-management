@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { getErrorMessage } from "../utils/errorUtils";
 
-enum RoomSize {
+enum RoomType {
     SINGLE = "SINGLE",
     DOUBLE = "DOUBLE",
 }
@@ -25,21 +25,42 @@ interface ReservationRequest {
     roomType?: string;
 }
 
+interface Reservation {
+    id: string;
+    start: string;
+    end: string;
+    email: string;
+    room: Room;
+}
+
+interface Room {
+    id: string;
+    number: number;
+    type: RoomType;
+}
+
 const BookingView: React.FC = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [roomType, setRoomSize] = useState<RoomSize>(RoomSize.SINGLE);
+    const [roomType, setRoomType] = useState<RoomType>(RoomType.SINGLE);
 
+    const [successMessage, setSuccessMessage] = useState<string>();
     const [errorMessage, setErrorMessage] = useState<string>();
 
     const navigateToList = () => navigate("/");
 
-    const onSuccess = () => navigateToList();
+    const onSuccess = (response: any) => {
+        const reservation: Reservation = response.data;
+        setErrorMessage(undefined);
+        setSuccessMessage(`Rum ${reservation.room.number} har bokats.`);
+    };
 
-    const onError = (error: any) =>
+    const onError = (error: any) => {
+        setSuccessMessage(undefined);
         setErrorMessage(getErrorMessage(error?.response?.data?.message ?? ""));
+    };
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -102,14 +123,14 @@ const BookingView: React.FC = () => {
                             <Form.Select
                                 value={roomType}
                                 onChange={(e) =>
-                                    setRoomSize(e.target.value as RoomSize)
+                                    setRoomType(e.target.value as RoomType)
                                 }
                                 required
                             >
-                                <option value={RoomSize.SINGLE}>
+                                <option value={RoomType.SINGLE}>
                                     Enkelrum
                                 </option>
-                                <option value={RoomSize.DOUBLE}>
+                                <option value={RoomType.DOUBLE}>
                                     Dubbelrum
                                 </option>
                             </Form.Select>
@@ -124,7 +145,7 @@ const BookingView: React.FC = () => {
                             type="reset"
                             onClick={navigateToList}
                         >
-                            Avbryt
+                            Tillbaka
                         </Button>
                         <Button variant="primary" type="submit">
                             Boka
@@ -140,6 +161,14 @@ const BookingView: React.FC = () => {
                 dismissible
             >
                 {errorMessage}
+            </Alert>
+            <Alert
+                variant="success"
+                show={successMessage !== undefined}
+                onClose={() => setSuccessMessage(undefined)}
+                dismissible
+            >
+                {successMessage}
             </Alert>
         </Container>
     );
