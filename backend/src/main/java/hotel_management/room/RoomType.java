@@ -1,6 +1,6 @@
 package hotel_management.room;
 
-public enum RoomSize {
+public enum RoomType {
     SINGLE,
     DOUBLE
 }

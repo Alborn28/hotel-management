@@ -19,13 +19,13 @@ public class Room {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RoomSize size;
+    private RoomType type;
 
     private Room() {}
 
-    public Room(Long number, RoomSize size) {
+    public Room(Long number, RoomType type) {
         this.number = number;
-        this.size = size;
+        this.type = type;
     }
 
     public UUID getId() {
@@ -36,7 +36,7 @@ public class Room {
         return number;
     }
 
-    public RoomSize getSize() {
-        return size;
+    public RoomType getType() {
+        return type;
     }
 }
