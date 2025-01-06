@@ -1,5 +1,6 @@
 package hotel_management.room;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class RoomController {
     }
 
     @PostMapping
-    public Room createRoom(@RequestBody Room room) {
+    public Room createRoom(@RequestBody @Valid Room room) {
         return roomRepository.save(room);
     }
 }

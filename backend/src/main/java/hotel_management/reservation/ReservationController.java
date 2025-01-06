@@ -1,6 +1,9 @@
 package hotel_management.reservation;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -14,20 +17,13 @@ public class ReservationController {
     }
 
     @PostMapping
-    public Reservation makeReservation(@RequestBody ReservationRequest reservationRequest) {
-        /*
-            Validate here or in service?
-            Make sure from and to are set
-            To must be after from
-            Can't book in the past?
-         */
+    public Reservation makeReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
         if (null != reservationRequest.getRoomId()) {
             return reservationService.bookRoom(reservationRequest.getRoomId(), reservationRequest.getStart(), reservationRequest.getEnd());
         } else if (null != reservationRequest.getRoomSize()) {
             return reservationService.bookRoomOfSize(reservationRequest.getRoomSize(), reservationRequest.getStart(), reservationRequest.getEnd());
         } else {
-            // TODO Throw error that you must provide roomId or roomSize
-            return new Reservation();
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "You must provide either roomId or roomSize.");
         }
     }
 }

@@ -1,12 +1,15 @@
 package hotel_management.reservation;
 
 import hotel_management.room.RoomSize;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 public class ReservationRequest {
+    @NotNull
     private LocalDate start;
+    @NotNull
     private LocalDate end;
     private UUID roomId;
     private RoomSize roomSize;
