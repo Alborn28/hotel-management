@@ -19,9 +19,9 @@ public class ReservationController {
     @PostMapping
     public Reservation makeReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
         if (null != reservationRequest.getRoomId()) {
-            return reservationService.bookRoom(reservationRequest.getRoomId(), reservationRequest.getStart(), reservationRequest.getEnd());
+            return reservationService.bookRoom(reservationRequest);
         } else if (null != reservationRequest.getRoomSize()) {
-            return reservationService.bookRoomOfSize(reservationRequest.getRoomSize(), reservationRequest.getStart(), reservationRequest.getEnd());
+            return reservationService.bookRoomOfSize(reservationRequest);
         } else {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "You must provide either roomId or roomSize.");
         }

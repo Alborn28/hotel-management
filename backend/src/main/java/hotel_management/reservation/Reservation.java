@@ -17,22 +17,34 @@ public class Reservation {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
+    @Column(nullable = false)
+    private String email;
+
     @Column(name = "start_date", nullable = false)
     private LocalDate start;
 
     @Column(name = "end_date", nullable = false)
     private LocalDate end;
 
-    public Reservation() {}
+    private Reservation() {}
 
-    public Reservation(LocalDate start, LocalDate end, Room room) {
+    public Reservation(Room room, String email, LocalDate start, LocalDate end) {
+        this.room = room;
+        this.email = email;
         this.start = start;
         this.end = end;
-        this.room = room;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public LocalDate getStart() {
@@ -41,9 +53,5 @@ public class Reservation {
 
     public LocalDate getEnd() {
         return end;
-    }
-
-    public Room getRoom() {
-        return room;
     }
 }

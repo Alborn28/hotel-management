@@ -27,7 +27,11 @@ public class ReservationService {
         this.roomRepository = roomRepository;
     }
 
-    public Reservation bookRoom(UUID roomId, LocalDate start, LocalDate end) {
+    public Reservation bookRoom(ReservationRequest request) {
+        return bookRoom(request.getRoomId(), request.getEmail(), request.getStart(), request.getEnd());
+    }
+
+    public Reservation bookRoom(UUID roomId, String email, LocalDate start, LocalDate end) {
         validateReservationDates(start, end);
 
         Optional<Room> room = roomRepository.findById(roomId);
@@ -40,11 +44,15 @@ public class ReservationService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "The room is occupied during the given time period.");
         }
 
-        Reservation reservation = new Reservation(start, end, room.get());
+        Reservation reservation = new Reservation(room.get(), email, start, end);
         return reservationRepository.save(reservation);
     }
 
-    public Reservation bookRoomOfSize(RoomSize roomSize, LocalDate start, LocalDate end) {
+    public Reservation bookRoomOfSize(ReservationRequest request) {
+        return bookRoomOfSize(request.getRoomSize(), request.getEmail(), request.getStart(), request.getEnd());
+    }
+
+    public Reservation bookRoomOfSize(RoomSize roomSize, String email, LocalDate start, LocalDate end) {
         validateReservationDates(start, end);
 
         List<Room> availableRooms = reservationRepository.availableRoomsOfSize(roomSize, start, end, PageRequest.ofSize(1));
@@ -53,7 +61,7 @@ public class ReservationService {
         }
 
         Room room = availableRooms.getFirst();
-        Reservation reservation = new Reservation(start, end, room);
+        Reservation reservation = new Reservation(room, email, start, end);
         return reservationRepository.save(reservation);
     }
 
