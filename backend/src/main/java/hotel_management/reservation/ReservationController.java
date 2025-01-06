@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("reservation-v1")
+@RequestMapping("api/reservation-v1")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -20,10 +20,10 @@ public class ReservationController {
     public Reservation makeReservation(@RequestBody @Valid ReservationRequest reservationRequest) {
         if (null != reservationRequest.getRoomId()) {
             return reservationService.bookRoom(reservationRequest);
-        } else if (null != reservationRequest.getRoomSize()) {
-            return reservationService.bookRoomOfSize(reservationRequest);
+        } else if (null != reservationRequest.getRoomType()) {
+            return reservationService.bookRoomOfType(reservationRequest);
         } else {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "You must provide either roomId or roomSize.");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "You must provide either roomId or roomType.");
         }
     }
 }

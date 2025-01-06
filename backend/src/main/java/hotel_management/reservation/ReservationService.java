@@ -2,7 +2,7 @@ package hotel_management.reservation;
 
 import hotel_management.room.Room;
 import hotel_management.room.RoomRepository;
-import hotel_management.room.RoomSize;
+import hotel_management.room.RoomType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -36,28 +36,28 @@ public class ReservationService {
 
         Optional<Room> room = roomRepository.findById(roomId);
         if (room.isEmpty()) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "The room does not exist.");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "room.does.not.exist");
         }
 
         boolean roomIsBooked = reservationRepository.roomIsBooked(roomId, start, end);
         if (roomIsBooked) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "The room is occupied during the given time period.");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "room.is.occupied");
         }
 
         Reservation reservation = new Reservation(room.get(), email, start, end);
         return reservationRepository.save(reservation);
     }
 
-    public Reservation bookRoomOfSize(ReservationRequest request) {
-        return bookRoomOfSize(request.getRoomSize(), request.getEmail(), request.getStart(), request.getEnd());
+    public Reservation bookRoomOfType(ReservationRequest request) {
+        return bookRoomOfType(request.getRoomType(), request.getEmail(), request.getStart(), request.getEnd());
     }
 
-    public Reservation bookRoomOfSize(RoomSize roomSize, String email, LocalDate start, LocalDate end) {
+    public Reservation bookRoomOfType(RoomType roomType, String email, LocalDate start, LocalDate end) {
         validateReservationDates(start, end);
 
-        List<Room> availableRooms = reservationRepository.availableRoomsOfSize(roomSize, start, end, PageRequest.ofSize(1));
+        List<Room> availableRooms = reservationRepository.availableRoomsOfType(roomType, start, end, PageRequest.ofSize(1));
         if (availableRooms.isEmpty()) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "There are no available rooms of the requested size.");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "no.available.rooms.of.given.type");
         }
 
         Room room = availableRooms.getFirst();
@@ -67,7 +67,7 @@ public class ReservationService {
 
     private void validateReservationDates(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "End date cannot be before start date.");
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400), "end.date.cannot.be.before.start.date");
         }
     }
 }

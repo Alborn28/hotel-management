@@ -1,6 +1,6 @@
 package hotel_management.reservation;
 
-import hotel_management.room.RoomSize;
+import hotel_management.room.RoomType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,16 +20,16 @@ public class ReservationRequest {
     private String email;
 
     private UUID roomId;
-    private RoomSize roomSize;
+    private RoomType roomType;
 
     private ReservationRequest() { }
 
-    public ReservationRequest(LocalDate start, LocalDate end, String email, UUID roomId, RoomSize roomSize) {
+    public ReservationRequest(LocalDate start, LocalDate end, String email, UUID roomId, RoomType roomType) {
         this.start = start;
         this.end = end;
         this.email = email;
         this.roomId = roomId;
-        this.roomSize = roomSize;
+        this.roomType = roomType;
     }
 
     public LocalDate getStart() {
@@ -48,7 +48,7 @@ public class ReservationRequest {
         return roomId;
     }
 
-    public RoomSize getRoomSize() {
-        return roomSize;
+    public RoomType getRoomType() {
+        return roomType;
     }
 }
